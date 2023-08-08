@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "your_input_text" | tr 'Ac' 'Ze'
+echo "$input" | tr 'Ac' 'Ze'
