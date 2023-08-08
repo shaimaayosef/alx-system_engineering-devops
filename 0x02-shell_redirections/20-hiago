@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "your_input_text" | tr -d 'cC'
+echo "$input" | tr -d 'cC'
