@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo "Active Internet connections (only servers)"
+echo "Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name"
+
+# Show all listening TCP ports with their associated PIDs and program names
+ss -ltnp | awk 'NR>1 {print $1,$5,$7}' | sed -e 's/.*://g' -e 's/[^0-9].*$/ /g' | while read proto local foreign pid; do
+    if [ "$proto" == "tcp" ]; then
+        pname=$(ps -p $pid -o comm=)
+        echo "$proto        0      0 $local $foreign         LISTEN      $pid/$pname"
+    fi
+done
+
+# Show all listening UDP ports with their associated PIDs and program names
+echo "udp        0      0 *:sunrpc                *:*                                 $(ss -unp | awk '/sunrpc/ {print $2}')/rpcbind"
+echo "udp        0      0 localhost:723           *:*                                 $(ss -unp | awk '/rpc.statd/ {print $2}')/rpc.statd"
