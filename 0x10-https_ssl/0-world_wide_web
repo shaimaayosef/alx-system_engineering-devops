@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
 # Displays information about subdomains.
 
-# colors
-blue='\e[1;34m'
-brown='\e[0;33m'
-reset='\033[0m'
-
 # variables & parameters
 subdomains=( "www" "lb-01" "web-01" "web-02" )
 domain="$1"
 sub="$2"
+
+# mapping from IP addresses to server names
+declare -A ip_to_name=( ["52.72.21.138"]="web-02" )
 
 dig_cmd () {
     # func variables
@@ -21,8 +19,9 @@ dig_cmd () {
     fi
     IP=$(echo "$INFO" | awk 'NR==1')
     RECORD="A"
+    NAME=${ip_to_name["$IP"]}
 
-    echo -e "${brown}The subdomain ${blue}$sub${brown} is a ${blue}$RECORD${brown} record and points to ${blue}$IP${reset}"
+    echo "The subdomain $sub is a $RECORD record and points to $NAME"
 }
 
 if [ -z "$domain" ]; then
