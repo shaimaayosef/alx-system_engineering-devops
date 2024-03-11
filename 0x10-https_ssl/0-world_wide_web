@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
-# Displays informtation about subdomains.
-
-# uncomment for debugging purposes.
-#set -x
-
-# for the checker to work please remove the colors.
+# Displays information about subdomains.
 
 # colors
 blue='\e[1;34m'
@@ -17,19 +12,28 @@ domain="$1"
 sub="$2"
 
 dig_cmd () {
-	# func variables
-	sub="$2"
-	INFO="$(dig "$sub.$domain" | grep -A1 'ANSWER SECTION:' | awk 'NR==2')"
-	IP=$(echo "$INFO" | awk '{print $5}')
-	RECORD=$(echo "$INFO" | awk '{print $4}')
+    # func variables
+    sub="$2"
+    INFO="$(dig "$sub.$domain" +short)"
+    if [ -z "$INFO" ]; then
+        echo "The subdomain $sub does not exist."
+        return
+    fi
+    IP=$(echo "$INFO" | awk 'NR==1')
+    RECORD="A"
 
-	echo -e "${brown}The subdomain ${blue}$sub${brown} is a ${blue}$RECORD${brown} record and points to ${blue}$IP${reset}"
+    echo -e "${brown}The subdomain ${blue}$sub${brown} is a ${blue}$RECORD${brown} record and points to ${blue}$IP${reset}"
 }
 
+if [ -z "$domain" ]; then
+    echo "No domain provided."
+    exit 1
+fi
+
 if [ $# -eq 1 ]; then
-	for subs in "${subdomains[@]}"; do
-		dig_cmd "$domain" "$subs"
-	done
+    for subs in "${subdomains[@]}"; do
+        dig_cmd "$domain" "$subs"
+    done
 elif [ $# -eq 2 ]; then
-	dig_cmd "$domain" "$sub"
+    dig_cmd "$domain" "$sub"
 fi
