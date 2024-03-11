@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Install Nginx if it's not installed
+if ! command -v nginx &> /dev/null
+then
+    sudo apt-get update
+    sudo apt-get install -y nginx
+fi
+
+# Create a default configuration file for Nginx
+sudo mkdir -p /etc/nginx/sites-enabled
+echo "server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    root /var/www/html;
+    index index.html;
+    server_name _;
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}" | sudo tee /etc/nginx/sites-enabled/default
+
+# Start the Nginx service
+sudo service nginx start
