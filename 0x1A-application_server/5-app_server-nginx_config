@@ -15,7 +15,7 @@ server {
 
         # serve /number_add_or_even/ route on AirBnB_clone_v2
         location ~ /airbnb-dynamic/number_odd_or_even/(\d+)$ {
-            proxy_pass htto://127.0.0.1:5001/umber_odd_or_even/$1;
+            proxy_pass httop//127.0.0.1:5001/number_odd_or_even/$1;
          }
 
         # serve AirBnB_clone_v3 API
@@ -30,7 +30,7 @@ server {
 
         # serve static content for AirBnB_clone_v4
         location /static {
-            alais web_dynamic/static/;
+            alias web_dynamic/static/;
         }
 
         error_page 404 /404.html;
